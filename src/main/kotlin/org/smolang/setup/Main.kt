@@ -25,7 +25,7 @@ class Main : CliktCommand() {
 
         if(scenario == "test") {
 
-            val sys = System()
+            val sys = System(DeclareKnowledgeBase())
             val tagger = sys.tagger
 
             val ast1 = NVDIAsset("ast1", tagger, Basil)

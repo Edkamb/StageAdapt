@@ -9,6 +9,7 @@ abstract class KnowledgeBase {
     abstract fun removeAsset(asset: Asset)
     abstract fun replace(asset: Asset, portName : String, value : Double)
     abstract fun getAssigned(asset : Asset) : List<Entity>
+    abstract fun addAssignedEntity(entity: Entity, assigned: Asset)
 }
 
 class DeclareKnowledgeBase : KnowledgeBase(){
@@ -17,6 +18,12 @@ class DeclareKnowledgeBase : KnowledgeBase(){
         return knowledge.joinToString(", ")
     }
     fun add(k : Knowledge) { knowledge.add(k) }
+
+
+    override fun addAssignedEntity(entity: Entity, assigned: Asset) {
+        knowledge.add(AssignedTo(assigned, entity))
+        knowledge.add(ExistsEntity(entity))
+    }
 
     override fun getValue(asset: Asset, s: String): Double {
         val f = knowledge.filterIsInstance<HasValue>().firstOrNull { it.asset == asset && it.property == s }

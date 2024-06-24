@@ -77,11 +77,10 @@ class StageMonitor(val system: System, val KB: KnowledgeBase) {
     }
 }
 
-class System : Entity("System"){
+class System(val KB : KnowledgeBase) : Entity("System"){
 
     var mons : List<Monitor> = emptyList()
 
-    val KB : KnowledgeBase = KnowledgeBase()
     val tagger  = Tagger(KB)
     val stages = StageMonitor(this,KB)
 
@@ -96,8 +95,7 @@ class System : Entity("System"){
     }
 
     fun addAssignedEntity(entity: Entity, assigned: Asset){
-        KB.add(AssignedTo(assigned, entity))
-        KB.add(ExistsEntity(entity))
+        KB.addAssignedEntity(entity,assigned)
         if(entity is Monitor) mons = mons + entity
     }
 
