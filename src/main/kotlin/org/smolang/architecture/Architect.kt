@@ -2,7 +2,7 @@ package org.smolang.architecture
 
 interface Ports {
     fun sensorUpdate(asset: Asset, portName : String, value : Double)
-    fun addAsset(name : String, kind : String)
+    fun addAsset(asset: Asset)
     fun removeAsset(name : String, kind : String)
 }
 
@@ -28,50 +28,14 @@ data class HasValue(val asset: Asset, val property : String, val value: Double) 
     }
 }
 
-class KnowledgeBase(val system: System) : Entity(""){
-    private val knowledge = mutableSetOf<Knowledge>()
-    fun print() : String{
-        return knowledge.joinToString(", ")
-    }
-    fun add(k : Knowledge) { knowledge.add(k) }
-    fun retract(k : Knowledge) { knowledge.remove(k) }
-
-    fun getValue(asset: Asset, s: String): Double {
-        val f = knowledge.filterIsInstance<HasValue>().firstOrNull { it.asset == asset && it.property == s }
-        if(f == null) throw Exception("No value for ${asset.getName()} on property $s")
-        return f.value
-    }
-    fun getKindedAssets(kind : String) : List<Asset>{
-        return knowledge.filterIsInstance<ExistsAsset>().filter{it.asset.nKind == kind }.map { it.asset }
-    }
-    fun addAsset(name : String, kind: String){
-        knowledge.add(ExistsAsset(Asset(name, kind)))
-    }
-    fun removeAsset(asset: Asset){
-        knowledge.remove(ExistsAsset(asset))
-    }
-
-    fun replace(asset: Asset, portName : String, value : Double) {
-        knowledge.removeAll(knowledge.filterIsInstance<HasValue>().filter { it.asset == asset && it.property == portName }
-            .toSet())
-        knowledge.add(HasValue(asset, portName, value))
-        knowledge.filterIsInstance<AssignedTo>().filter { it.asset == asset }.map { it.entity }.forEach {it.setInput(portName, value)}
-
-    }
-
-    fun getAssigned(asset : Asset) : List<Entity>{
-        return knowledge.filterIsInstance<AssignedTo>().filter{it.asset == asset }.map { it.entity }
-    }
-}
-
 
 class Tagger(private val KB : KnowledgeBase) : Ports {
 
     override fun sensorUpdate(asset: Asset, portName : String, value : Double){
         KB.replace(asset, portName, value)
     }
-    override fun addAsset(name : String, kind: String){
-        KB.addAsset(name, kind)
+    override fun addAsset(asset: Asset){
+        KB.addAsset(asset)
     }
     override fun removeAsset(name : String, kind: String){
         KB.removeAsset(Asset(name, kind))
@@ -93,7 +57,8 @@ class StageMonitor(val system: System, val KB: KnowledgeBase) {
     fun detectMissing(){
         var toAdd = listOf<Pair<Asset, List<Entity>>>()
         for(stage in stages){
-            val members = KB.getKindedAssets(stage.getKind()).filter { stage.isMember(it, KB) }
+            val kinded = KB.getKindedAssets(stage.getKind())
+            val members = kinded.filter { stage.isMember(it, KB) }
             for(member in members)
                 if(!stage.isConsistent(member, KB.getAssigned(member), KB)) { // this computes V (l.5) M
 
@@ -116,19 +81,13 @@ class System : Entity("System"){
 
     var mons : List<Monitor> = emptyList()
 
-    val KB : KnowledgeBase = KnowledgeBase(this)
+    val KB : KnowledgeBase = KnowledgeBase()
     val tagger  = Tagger(KB)
     val stages = StageMonitor(this,KB)
 
     fun print(){
         println(KB.print())
-        //println("Controllers: "+ctrls.values.joinToString(", "))
-        //println("Monitors: "+mons.values.joinToString(", "))
     }
-    fun controlCycle(){
-        //ctrls.values.forEach { it.control() }
-    }
-
     fun stageCycle(){
         stages.detectMissing()
     }
