@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.smolang.architecture.*
 import org.smolang.declare.*
+import kotlin.system.exitProcess
 
 class Main : CliktCommand() {
 
@@ -22,7 +23,20 @@ class Main : CliktCommand() {
     override fun run() {
         org.apache.jena.query.ARQ.init()
 
-
+        val sb = SemanticKnowledgeBase()
+        val ast = Asset("ast1","kind1")
+        sb.getKindedAssets("kind1")
+        sb.addAsset(ast)
+        sb.getKindedAssets("kind1")
+        sb.removeAsset(ast)
+        sb.getKindedAssets("kind1")
+        sb.replace(ast, "prop", 1.0)
+        var vv = sb.getValue(ast, "prop")
+        println(vv)
+        sb.replace(ast, "prop", 2.0)
+        vv = sb.getValue(ast, "prop")
+        println(vv)
+        exitProcess(0)
         if(scenario == "test") {
 
             val sys = System(DeclareKnowledgeBase())

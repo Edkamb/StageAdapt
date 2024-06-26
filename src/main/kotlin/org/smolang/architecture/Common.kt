@@ -1,5 +1,10 @@
 package org.smolang.architecture
 
+import org.apache.jena.graph.Node
+import org.apache.jena.graph.NodeFactory
+import org.apache.jena.graph.Node_URI
+import org.apache.jena.rdf.model.Resource
+
 /** Common structures for stages and the system architecture prototype **/
 
 /*
@@ -21,20 +26,31 @@ interface Kindable {
 }
 
 /* An entity is anything that get messages from the tagger, so mostly monitors and controllers. */
-open class Entity(eName : String) : Nameable {
+open class Entity(override val nName: String,
+                  override val nKind: String) : Nameable, Kindable {
     protected val last = mutableMapOf<String, Double>()
-    override val nName: String = eName
     fun setInput(port: String, newInput : Double) { last[port] = newInput }
-    override fun toString(): String {
-        return nName
+    override fun toString(): String = nName
+
+    val uri: Node = NodeFactory.createURI("http://www.smolang.org/stages#$nName")
+    val uriKind: Node = NodeFactory.createURI("http://www.smolang.org/stages#$nKind")
+    init {
+        Common.entityUriMap[uri.uri] = this
     }
 }
 
 /* external assets. These must _NOT_ be referred from in the system, just with their names/ports */
-open class Asset(aName : String, aKind : String) : Nameable, Kindable {
-    override val nKind: String = aKind
-    override val nName: String = aName
-    override fun toString(): String {
-        return nName
+open class Asset(final override val nName: String,
+                 final override val nKind: String ) : Nameable, Kindable {
+    override fun toString(): String = nName
+    val uri: Node = NodeFactory.createURI("http://www.smolang.org/stages#$nName")
+    val uriKind: Node = NodeFactory.createURI("http://www.smolang.org/stages#$nKind")
+    init {
+        Common.assetUriMap[uri.uri] = this
     }
+}
+
+object Common {
+    val assetUriMap = mutableMapOf<String,Asset>()
+    val entityUriMap = mutableMapOf<String,Entity>()
 }

@@ -24,12 +24,12 @@ class NVDIAsset(name : String,
     }
 }
 
-class ReqTenMonitor(val assetName : Asset, monName : String) : Monitor(monName) {
+class ReqTenMonitor(val assetName : Asset, monName : String) : Monitor(monName, "Req10Mon") {
     override fun check(): Boolean= last["m"]!! >= 10
     override fun getPort(): String = "m"
     override fun toString(): String = "[Monitor >= 10 (${getName()}) for $assetName]"
 }
-class ReqFiveMonitor(val assetName : Asset, monName : String) : Monitor(monName) {
+class ReqFiveMonitor(val assetName : Asset, monName : String) : Monitor(monName, "Req10Mon") {
     override fun check(): Boolean = last["m"]!! >= 5
     override fun getPort(): String = "m"
     override fun toString(): String = "[Monitor >= 5 (${getName()}) for $assetName]"

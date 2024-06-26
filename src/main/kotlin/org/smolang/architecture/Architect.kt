@@ -6,28 +6,6 @@ interface Ports {
     fun removeAsset(name : String, kind : String)
 }
 
-interface Knowledge
-data class ExistsEntity(val entity: Entity) : Knowledge {
-    override fun toString(): String {
-        return "ExistsEntity($entity)"
-    }
-}
-data class ExistsAsset(val asset: Asset) : Knowledge {
-    override fun toString(): String {
-        return "ExistsAsset($asset)"
-    }
-}
-data class AssignedTo(val asset: Asset, val entity: Entity) : Knowledge {
-    override fun toString(): String {
-        return "AssignedTo($asset, $entity)"
-    }
-}
-data class HasValue(val asset: Asset, val property : String, val value: Double) : Knowledge {
-    override fun toString(): String {
-        return "HasValue($asset, $property, $value)"
-    }
-}
-
 
 class Tagger(private val KB : KnowledgeBase) : Ports {
 
@@ -77,7 +55,7 @@ class StageMonitor(val system: System, val KB: KnowledgeBase) {
     }
 }
 
-class System(val KB : KnowledgeBase) : Entity("System"){
+class System(val KB : KnowledgeBase) {
 
     var mons : List<Monitor> = emptyList()
 
