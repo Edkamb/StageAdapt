@@ -1,0 +1,177 @@
+@prefix : <http://www.smolang.org/stages#/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.smolang.org/stages#> .
+
+<http://www.smolang.org/stages#> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.smolang.org/stages#assignedTo
+:assignedTo rdf:type owl:ObjectProperty ,
+                     owl:FunctionalProperty ;
+            rdfs:domain :Asset ;
+            rdfs:range :Component .
+
+
+###  http://www.smolang.org/stages#controlledBy
+:controlledBy rdf:type owl:ObjectProperty ;
+              rdfs:subPropertyOf :assignedTo ;
+              rdfs:range :Controller .
+
+
+###  http://www.smolang.org/stages#monitoredBy
+:monitoredBy rdf:type owl:ObjectProperty ;
+             rdfs:subPropertyOf :assignedTo ;
+             rdfs:range :Monitor .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.smolang.org/stages#nvdi
+:nvdi rdf:type owl:DatatypeProperty ,
+               owl:FunctionalProperty ;
+      rdfs:domain :Basil ;
+      rdfs:range xsd:decimal .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.smolang.org/stages#Asset
+:Asset rdf:type owl:Class ;
+       owl:disjointWith :Monitor .
+
+
+###  http://www.smolang.org/stages#Basil
+:Basil rdf:type owl:Class ;
+       rdfs:subClassOf :Asset .
+
+
+###  http://www.smolang.org/stages#Component
+:Component rdf:type owl:Class ;
+           owl:disjointUnionOf ( :Controller
+                                 :Monitor
+                               ) .
+
+
+###  http://www.smolang.org/stages#Controller
+:Controller rdf:type owl:Class ;
+            rdfs:subClassOf :Component .
+
+
+###  http://www.smolang.org/stages#Healthy
+:Healthy rdf:type owl:Class ;
+         owl:equivalentClass [ owl:intersectionOf ( :Basil
+                                                    [ rdf:type owl:Restriction ;
+                                                      owl:onProperty :nvdi ;
+                                                      owl:someValuesFrom [ rdf:type rdfs:Datatype ;
+                                                                           owl:onDatatype xsd:integer ;
+                                                                           owl:withRestrictions ( [ xsd:minExclusive 5
+                                                                                                  ]
+                                                                                                )
+                                                                         ]
+                                                    ]
+                                                  ) ;
+                               rdf:type owl:Class
+                             ] .
+
+
+###  http://www.smolang.org/stages#HealthyCons
+:HealthyCons rdf:type owl:Class ;
+             owl:equivalentClass [ owl:intersectionOf ( :Healthy
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :assignedTo ;
+                                                          owl:someValuesFrom :LevelUnderFiveMonitor
+                                                        ]
+                                                      ) ;
+                                   rdf:type owl:Class
+                                 ] .
+
+
+###  http://www.smolang.org/stages#LevelUnderFiveMonitor
+:LevelUnderFiveMonitor rdf:type owl:Class ;
+                       rdfs:subClassOf :Monitor ;
+                       owl:disjointWith :LevelUnderTenMonitor .
+
+
+###  http://www.smolang.org/stages#LevelUnderTenMonitor
+:LevelUnderTenMonitor rdf:type owl:Class ;
+                      rdfs:subClassOf :Monitor .
+
+
+###  http://www.smolang.org/stages#Monitor
+:Monitor rdf:type owl:Class ;
+         rdfs:subClassOf :Component .
+
+
+###  http://www.smolang.org/stages#MyController
+:MyController rdf:type owl:Class ;
+              rdfs:subClassOf :Controller .
+
+
+###  http://www.smolang.org/stages#Sick
+:Sick rdf:type owl:Class ;
+      owl:equivalentClass [ owl:intersectionOf ( :Basil
+                                                 [ rdf:type owl:Restriction ;
+                                                   owl:onProperty :nvdi ;
+                                                   owl:someValuesFrom [ rdf:type rdfs:Datatype ;
+                                                                        owl:onDatatype xsd:integer ;
+                                                                        owl:withRestrictions ( [ xsd:maxInclusive 5
+                                                                                               ]
+                                                                                             )
+                                                                      ]
+                                                 ]
+                                               ) ;
+                            rdf:type owl:Class
+                          ] .
+
+
+###  http://www.smolang.org/stages#SickCons
+:SickCons rdf:type owl:Class ;
+          owl:equivalentClass [ owl:intersectionOf ( :Sick
+                                                     [ rdf:type owl:Restriction ;
+                                                       owl:onProperty :assignedTo ;
+                                                       owl:someValuesFrom :LevelUnderTenMonitor
+                                                     ]
+                                                   ) ;
+                                rdf:type owl:Class
+                              ] .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.smolang.org/stages#/a1
+:a1 rdf:type owl:NamedIndividual ,
+             :Basil ;
+    :nvdi 4 .
+
+
+###  http://www.smolang.org/stages#/m1
+:m1 rdf:type owl:NamedIndividual ,
+             :LevelUnderTenMonitor .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :Asset
+                :Controller
+                :Monitor
+              )
+] .
+
+
+###  Generated by the OWL API (version 4.5.26.2023-07-17T20:34:13Z) https://github.com/owlcs/owlapi

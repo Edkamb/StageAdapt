@@ -1,4 +1,4 @@
-package org.smolang.architecture
+package org.smolang.stages.architecture
 
 import org.apache.jena.graph.Node
 import org.apache.jena.graph.NodeFactory
@@ -51,6 +51,6 @@ open class Asset(final override val nName: String,
 }
 
 object Common {
-    val assetUriMap = mutableMapOf<String,Asset>()
-    val entityUriMap = mutableMapOf<String,Entity>()
+    val assetUriMap = mutableMapOf<String, Asset>()
+    val entityUriMap = mutableMapOf<String, Entity>()
 }

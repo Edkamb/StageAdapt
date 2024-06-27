@@ -1,4 +1,4 @@
-package org.smolang.architecture
+package org.smolang.stages.architecture
 
 abstract class KnowledgeBase {
     abstract fun print() : String
@@ -10,5 +10,7 @@ abstract class KnowledgeBase {
     abstract fun replace(asset: Asset, portName : String, value : Double)
     abstract fun getAssigned(asset : Asset) : List<Entity>
     abstract fun addAssignedEntity(entity: Entity, assigned: Asset)
+    abstract fun removeEntity(e: Entity)
+    abstract fun getPossibleEntities(): List<String>
 }
 

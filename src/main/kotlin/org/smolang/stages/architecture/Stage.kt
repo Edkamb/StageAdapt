@@ -1,4 +1,4 @@
-package org.smolang.architecture
+package org.smolang.stages.architecture
 
 import java.util.Queue
 
@@ -11,7 +11,7 @@ abstract class Monitor(override val nName: String, override val nKind: String) :
 interface Stage{
     fun isMember(asset: Asset, KB : KnowledgeBase) : Boolean
     fun isConsistent(asset: Asset, mons : List<Entity>, KB : KnowledgeBase) : Boolean
-    fun gen(asset: Asset) : List<Entity> //combines the two gen functions
+    fun gen(asset: Asset, KB : KnowledgeBase) : List<Entity> //combines the two gen functions
     fun getKind() : String
 }
 

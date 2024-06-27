@@ -4,16 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35146ae9-c571-4e18-a929-3d7621058326" name="Changes" comment="Fix addAssignedEntity">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Declare.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Semantic.kt" afterDir="false" />
+    <list default="true" id="35146ae9-c571-4e18-a929-3d7621058326" name="Changes" comment="Added semantic stages">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/SemanticStages.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/system/Greenhouse.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Architect.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Architect.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Common.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Common.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Knowledge.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Knowledge.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Stage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Stage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/declare/Declerative.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/declare/Declerative.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/setup/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/setup/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Architect.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Architect.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Common.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Common.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Declare.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/Declare.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Knowledge.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Knowledge.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Semantic.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/Semantic.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Stage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Stage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/declare/Declerative.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/DeclerativeStages.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/setup/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/setup/Main.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,8 +31,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Kotlin File" />
         <option value="Kotlin Class" />
+        <option value="Kotlin File" />
       </list>
     </option>
   </component>
@@ -48,47 +51,63 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.Build StageAdapt.executor&quot;: &quot;Run&quot;,
-    &quot;Kotlin.MainKt.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Problems&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build StageAdapt.executor": "Run",
+    "Kotlin.MainKt Scen2.executor": "Debug",
+    "Kotlin.MainKt.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "project.structure.last.edited": "Problems",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;kotlin-gradle-user-dirs&quot;: [
-      &quot;/home/edkam/.gradle&quot;
+  "keyToStringList": {
+    "kotlin-gradle-user-dirs": [
+      "/home/edkam/.gradle"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/main/kotlin/org/smolang/setup" />
+      <recent name="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/org/smolang/declare" />
+      <recent name="$PROJECT_DIR$/src/main/kotlin/org/smolang/setup" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
       <recent name="org.smolang.architecture" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="org.smolang.setup.MainKt" />
+  <component name="RunManager" selected="Kotlin.MainKt Scen2">
+    <configuration name="MainKt Scen1" type="JetRunConfigurationType" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="org.smolang.stages.setup.MainKt" />
       <module name="StageAdapt.main" />
+      <option name="PROGRAM_PARAMETERS" value="--scenario1" />
       <shortenClasspath name="NONE" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="MainKt Scen2" type="JetRunConfigurationType">
+      <option name="MAIN_CLASS_NAME" value="org.smolang.stages.setup.MainKt" />
+      <module name="StageAdapt.main" />
+      <option name="PROGRAM_PARAMETERS" value="--scenario2" />
+      <shortenClasspath name="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Kotlin.MainKt Scen2" />
+      <item itemvalue="Kotlin.MainKt Scen1" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotlin.MainKt" />
+        <item itemvalue="Kotlin.MainKt Scen1" />
       </list>
     </recent_temporary>
   </component>
@@ -125,34 +144,56 @@
       <option name="project" value="LOCAL" />
       <updated>1719212624648</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Added semantic stages">
+      <option name="closed" value="true" />
+      <created>1719413944812</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1719413944812</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Init" />
     <MESSAGE value="Fix addAssignedEntity" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix addAssignedEntity" />
+    <MESSAGE value="Added semantic stages" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added semantic stages" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/declare/Declerative.kt</url>
-          <line>40</line>
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/DeclerativeStages.kt</url>
+          <line>12</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/declare/Declerative.kt</url>
-          <line>57</line>
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/DeclerativeStages.kt</url>
+          <line>29</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/architecture/Architect.kt</url>
-          <line>38</line>
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Architect.kt</url>
+          <line>35</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/Semantic.kt</url>
+          <line>64</line>
           <properties>
             <option name="lambda-ordinal" value="-1" />
           </properties>
-          <option name="timeStamp" value="7" />
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/Semantic.kt</url>
+          <line>64</line>
+          <properties>
+            <option name="lambda-ordinal" value="0" />
+          </properties>
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

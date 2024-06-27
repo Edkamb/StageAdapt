@@ -1,4 +1,8 @@
-package org.smolang.architecture
+package org.smolang.stages.declare
+
+import org.smolang.stages.architecture.Asset
+import org.smolang.stages.architecture.Entity
+import org.smolang.stages.architecture.KnowledgeBase
 
 interface Knowledge
 data class ExistsEntity(val entity: Entity) : Knowledge {
@@ -33,6 +37,14 @@ class DeclareKnowledgeBase : KnowledgeBase(){
     override fun addAssignedEntity(entity: Entity, assigned: Asset) {
         knowledge.add(AssignedTo(assigned, entity))
         knowledge.add(ExistsEntity(entity))
+    }
+
+    override fun removeEntity(e: Entity) {
+        TODO("Not yet implemented, not needed for declarative stages ")
+    }
+
+    override fun getPossibleEntities(): List<String> {
+        TODO("Not yet implemented, not needed for declarative stages")
     }
 
     override fun getValue(asset: Asset, s: String): Double {

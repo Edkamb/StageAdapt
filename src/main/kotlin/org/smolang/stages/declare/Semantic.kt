@@ -1,4 +1,4 @@
-package org.smolang.architecture
+package org.smolang.stages.declare
 
 import org.apache.jena.query.QueryExecutionFactory
 import org.apache.jena.query.QueryFactory
@@ -7,6 +7,10 @@ import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.reasoner.ReasonerRegistry
 import org.apache.jena.update.UpdateAction
 import org.apache.jena.update.UpdateFactory
+import org.smolang.stages.architecture.Asset
+import org.smolang.stages.architecture.Common
+import org.smolang.stages.architecture.Entity
+import org.smolang.stages.architecture.KnowledgeBase
 import java.io.ByteArrayInputStream
 import java.io.File
 
@@ -58,7 +62,7 @@ class SemanticKnowledgeBase : KnowledgeBase(){
         val qexec = QueryExecutionFactory.create(query, model)
         val res = qexec.execSelect()
         var list = listOf<Asset?>()
-        res.forEach { val f = Common.assetUriMap[it.toString()]; list = list + f}
+        res.forEach { val f = Common.assetUriMap[it.get("?ast").toString()]; list = list + f}
         //println(res.hasNext())
         return list.filterNotNull()
     }
@@ -111,5 +115,27 @@ class SemanticKnowledgeBase : KnowledgeBase(){
         """.trimIndent()
         val query = UpdateFactory.create(queryWithPrefixes)
         UpdateAction.execute(query, model)
+    }
+
+
+    override fun removeEntity(e: Entity) {
+        val queryWithPrefixes = """
+            DELETE DATA { <${e.uri.uri}> a <${e.uriKind}> } 
+        """.trimIndent()
+
+        val query = UpdateFactory.create(queryWithPrefixes)
+        UpdateAction.execute(query, model)
+    }
+
+    override fun getPossibleEntities(): List<String> {
+        val queryWithPrefixes = """
+            SELECT ?ent { ?ent <http://www.w3.org/2000/01/rdf-schema#subClassOf> <http://www.smolang.org/stages#Component> } 
+        """.trimIndent()
+        val query = QueryFactory.create(queryWithPrefixes)
+        val qexec = QueryExecutionFactory.create(query, model)
+        val res = qexec.execSelect()
+        var list = listOf<String?>()
+        res.forEach { list = list + it.toString()}
+        return list.filterNotNull()
     }
 }
