@@ -39,7 +39,7 @@ class StageMonitor(val system: System, val KB: KnowledgeBase) {
             val members = kinded.filter { stage.isMember(it, KB) }
             for(member in members)
                 if(!stage.isConsistent(member, KB.getAssigned(member), KB)) { // this computes V (l.5) M
-                    println("   inconsistent: $member")
+                    //println("   inconsistent: $member")
                     val ret = stage.gen(member, KB)
                     toAdd = toAdd + Pair(member, ret)     // this computer toGenerate (l.9) A
                 }

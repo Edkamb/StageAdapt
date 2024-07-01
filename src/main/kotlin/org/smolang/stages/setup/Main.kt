@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.switch
+import com.github.ajalt.clikt.parameters.types.int
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -15,20 +16,76 @@ import org.smolang.stages.declare.*
 import org.smolang.stages.system.Basil
 import org.smolang.stages.system.NVDIAsset
 import org.smolang.stages.system.ReqTenMonitor
+import kotlin.random.Random
 import kotlin.system.exitProcess
 
 class Main : CliktCommand() {
 
-    private val verbose by option("--verbose", "-v", help = "Verbose output.").flag()
+    private val verbose by option("--verbose", "-v", help = "Verbose output").flag()
     private val scenario by option().switch(
         "--test" to "test", "-t" to "test",
         "--scenario1" to "scen1", "-s1" to "scen1",
         "--scenario2" to "scen2", "-s2" to "scen2",
+        "--generic_declare" to "genD", "-gD" to "genD",
+        "--generic_semantic" to "genS", "-gS" to "genS",
     ).default("test")
+    private val nrStage by option("-m", help = "number stages").int().default(2)
+    private val nrAssets by option("-n", help = "number assets").int().default(2)
 
     override fun run() {
         org.apache.jena.query.ARQ.init()
 
+        if(scenario == "genD") {
+            val sys = System(DeclareKnowledgeBase())
+            val tagger = sys.tagger
+
+            val stages = mutableListOf<GenericDeclareNVDIStage>()
+            for (i in 0 ..< nrStage)
+                stages.add(GenericDeclareNVDIStage(i.toDouble()..i.toDouble()*10, i))
+
+            val assets = mutableListOf<NVDIAsset>()
+            for (i in 0 ..< nrAssets)
+                assets.add(NVDIAsset("ast$i",tagger, Basil))
+
+            assets.forEach { tagger.addAsset(it) }
+            stages.forEach { sys.addStage(it) }
+
+
+            assets.forEach { it.push(Random.nextDouble(0.1, nrStage.toDouble()*10), 0.0) }
+
+            val start = java.lang.System.currentTimeMillis()
+            sys.stageCycle()
+            val end = java.lang.System.currentTimeMillis()
+            println("$nrStage,$nrAssets,${(end-start)}")
+
+            exitProcess(0)
+        }
+        if(scenario == "genS") {
+            val sys = System(SemanticKnowledgeBase())
+            val tagger = sys.tagger
+
+            val stages = mutableListOf<GenericSemanticNVDIStage>()
+            for (i in 0 ..< nrStage)
+                stages.add(GenericSemanticNVDIStage(0,i.toDouble()..i.toDouble()*10, i))
+
+            val assets = mutableListOf<NVDIAsset>()
+            for (i in 0 ..< nrAssets)
+                assets.add(NVDIAsset("ast$i",tagger, Basil))
+
+            assets.forEach { tagger.addAsset(it) }
+            stages.forEach { sys.addStage(it) }
+
+
+            assets.forEach { it.push(Random.nextDouble(0.1, nrStage.toDouble()*10), 0.0) }
+
+            val start = java.lang.System.currentTimeMillis()
+            sys.stageCycle()
+            val end = java.lang.System.currentTimeMillis()
+            sys.stageCycle()
+            println("$nrStage,$nrAssets,${(end-start)}")
+
+            exitProcess(0)
+        }
         if(scenario == "test") {
             val sb = SemanticKnowledgeBase()
             val ast = Asset("ast1", "kind1")

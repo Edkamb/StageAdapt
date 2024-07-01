@@ -21,7 +21,6 @@ class SemanticKnowledgeBase : KnowledgeBase(){
        val f = ModelFactory.createDefaultModel().read(ByteArrayInputStream(File("coreOnto.ttl").readText().toByteArray()), null, "TTL")
        model = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), f)
 
-       println(model.numPrefixes())
    }
     override fun print(): String {
         return model.toString()

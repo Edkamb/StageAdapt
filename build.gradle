@@ -1,5 +1,7 @@
 plugins {
+    id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.9.21'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'org.smolang'
@@ -32,4 +34,12 @@ test {
 }
 kotlin {
     jvmToolchain(19)
+}
+
+tasks {
+    jar {
+        manifest {
+            attributes "Main-Class": "org.smolang.stages.setup.MainKt"
+        }
+    }
 }
