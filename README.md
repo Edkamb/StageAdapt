@@ -1,0 +1,3 @@
+This repository contains a prototypical implementation of declarative lifecycles management as described in the submission `Declarative Lifecycle Management in Digital Twins`.
+
+To reproduce the data for the plots, run first `./generateDecl.sh >> decl.csv` (for the non-semantic stages) and then `./generateSem.sh >> sem.csv` (for the semantic stages). Each script will take a few minutes to run. To generate the 3D plot, run `python3 plot.py`.

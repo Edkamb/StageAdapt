@@ -1,4 +1,5 @@
 #!/bin/bash
+echo n,m,T
 for i in `seq 1 2000 12001`
 do
   j=0
