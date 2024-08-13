@@ -1,0 +1,48 @@
+# Prefixes for OTTR in TTL syntax.
+# The input is are lists of names cmp_i, ctrl_i, Stage_i, ast_i.
+@prefix t: <http://example.com/template/> .
+@prefix o: <http://example.com/ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix ottr: <http://ns.ottr.xyz/0.4/> .
+@prefix ax: <http://tpl.ottr.xyz/owl/axiom/0.1/> .
+@prefix rstr: <http://tpl.ottr.xyz/owl/restriction/0.1/> .
+@prefix o-rdfs: <http://tpl.ottr.xyz/rdfs/0.2/> .
+
+# For each cmp_i, we get
+# Class: cmp_i subClassOf: Component and that all cmp_i are pairwise disjoint
+t:Components[ NEList<owl:Class> ?components ] :: {
+    ax:DisjointClasses(?components),
+    cross | o-rdfs:SubClassOf(++?components, o:Component)
+} .
+
+# As above for ast_i
+t:Assets[ NEList<owl:Class> ?assets ] :: {
+    ax:DisjointClasses(?cls),
+    cross | o-rdfs:SubClassOf(++?assets, o:Asset)
+} .
+
+# For each Stage_i, we get also (i) an asset ast, and
+#                               (ii) a set of monitors cmp_ij and generate two classes.
+# Class: Stage_i SubClassOf ast
+# Class: StageCons_i equivalentTo Stage_i and assignedTo some cmp_i1 and ... and cmp_in
+t:Stages[
+    NEList<owl:Class> ?stages,
+    NEList<owl:Class> ?stageConses,
+    NEList<NEList<owl:Class>> ?cmp_ijss,
+    owl:Class ?ast
+] :: {
+    cross | o-rdfs:SubClassOf(++?stages, ?ast),
+    zipMin | t:StageCons(++?stages, ++?stageConses, ++?cmp_ijss)
+} .
+
+t:StageCons [
+    owl:Class ?stage_i,  owl:Class ?stageCons_i, NEList<owl:Class> ?cmp_ijs
+] :: {
+    # _:monIntersection = ?cmp_i1 and ... and ?cmp_iN
+    rstr:ObjectIntersectionOf(_:monIntersection, ?cmp_ijs),
+    # _:assignedTo = assignedTo some _:monIntersection
+    rstr:ObjectSomeValuesFrom(_:assignedTo, o:assignedTo, _:monIntersection),
+    # ?stageCons_i equivalentTo: ?stage_i and _:assignedTo
+    ax:EquivObjectIntersectionOf(?stageCons_i, (?stage_i, _:assignedTo))
+} .
+
