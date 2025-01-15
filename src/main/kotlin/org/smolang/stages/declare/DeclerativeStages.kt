@@ -9,12 +9,14 @@ class HealthyDeclStage : HealthyStage() {
     override fun gen(asset: Asset, KB : KnowledgeBase): List<Entity> {
         return listOf(ReqTenMonitor(asset, "rqTen_${count++}"))
     }
+    override fun toString(): String = "Healthy"
 }
 class OkDeclStage : OkStage() {
     private var count = 0
     override fun gen(asset: Asset, KB : KnowledgeBase): List<Entity> {
         return listOf(ReqWattOkMonitor(asset, "rqOk_${count++}"))
     }
+    override fun toString(): String = "OK"
 }
 
 class MaintainDeclStage : MaintainStage() {
@@ -22,6 +24,7 @@ class MaintainDeclStage : MaintainStage() {
     override fun gen(asset: Asset, KB : KnowledgeBase): List<Entity> {
         return listOf(ReqWattOkMonitor(asset, "rqOk_${count++}"))
     }
+    override fun toString(): String = "Maintain"
 }
 
 class SickDeclStage : SickStage() {
@@ -29,5 +32,6 @@ class SickDeclStage : SickStage() {
     override fun gen(asset: Asset, KB : KnowledgeBase): List<Monitor> {
         return listOf( ReqFiveMonitor(asset, "rqFive_${count++}"))//, null) //DefaultController("ctrl_${count++}"))
     }
+    override fun toString(): String = "Sick"
 }
 

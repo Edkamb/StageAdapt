@@ -26,6 +26,7 @@ class Main : CliktCommand() {
         "--scenario1" to "scen1", "-s1" to "scen1",
         "--scenario2" to "scen2", "-s2" to "scen2",
         "--multi" to "multi",
+        "--multi_semantic" to "multi_semantic",
         "--generic_declare" to "genD", "-gD" to "genD",
         "--generic_semantic" to "genS", "-gS" to "genS",
     ).default("test")
@@ -102,8 +103,8 @@ class Main : CliktCommand() {
             println(vv)
             exitProcess(0)
         }
-        if(scenario == "multi") {
-            runMultiSetup()
+        if(scenario == "multi" || scenario == "multi_semantic") {
+            runMultiSetup(scenario == "multi_semantic")
             exitProcess(0)
         }
         val sys = if(scenario == "scen1") System(DeclareKnowledgeBase()) else System(SemanticKnowledgeBase())
@@ -148,9 +149,9 @@ class Main : CliktCommand() {
 
     }
 
-    private fun runMultiSetup() {
+    private fun runMultiSetup(semantic : Boolean) {
 
-        val sys = System(DeclareKnowledgeBase())
+        val sys = System(if(semantic) SemanticKnowledgeBase() else DeclareKnowledgeBase())
         val tagger = sys.tagger
 
         val pump1 = Pump("pump1", tagger, PumpKind)
@@ -188,7 +189,7 @@ class Main : CliktCommand() {
         { ast, knowledgeBase -> pl1.gen(ast, knowledgeBase) + pu1.gen(ast, knowledgeBase) }
         val st2 = DirectCompose(pl1, pu2, 1, 1)
         { ast, knowledgeBase -> pl1.gen(ast, knowledgeBase) + pu2.gen(ast, knowledgeBase) }
-        val st3 = DirectCompose(pl1, pu1, 1, 1)
+        val st3 = DirectCompose(pl2, pu1, 1, 1)
         { ast, knowledgeBase -> pl2.gen(ast, knowledgeBase) + pu1.gen(ast, knowledgeBase) }
         val st4 = DirectCompose(pl2, pu2, 1, 1)
         { ast, knowledgeBase -> pl2.gen(ast, knowledgeBase) + pu2.gen(ast, knowledgeBase) }

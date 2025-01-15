@@ -50,7 +50,19 @@ class SemanticKnowledgeBase : KnowledgeBase(){
     }
 
     override fun getKindedAssets(kind: String): List<Asset> {
-    //XXX TODO: add here the dcomposition and aggregation
+        if(kind.contains(".")){
+            val kinds = kind.split(".")
+            val qStr = kinds.map { " <http://www.smolang.org/stages#hasPart> [ a <http://www.smolang.org/stages#$it> ]" }.joinToString(";")
+            val queryWithPrefixes = """
+            SELECT ?ast { ?ast a <http://www.smolang.org/stages#Aggregate>; $qStr .} 
+        """.trimIndent()
+            val query = QueryFactory.create(queryWithPrefixes)
+            val qexec = QueryExecutionFactory.create(query, model)
+            val res = qexec.execSelect()
+            var list = listOf<Asset?>()
+            res.forEach { val f = Common.assetUriMap[it.get("?ast").toString()]; list = list + f}
+            return list.filterNotNull()
+        }
         val queryWithPrefixes = """
             SELECT ?ast { ?ast a <http://www.smolang.org/stages#$kind> } 
         """.trimIndent()
@@ -91,7 +103,36 @@ class SemanticKnowledgeBase : KnowledgeBase(){
         UpdateAction.execute(query, model)
     }
 
+    /*fun printAllAssigned(){
+
+        val queryWithPrefixes = """
+            SELECT DISTINCT ?ast ?ent { ?ast <http://www.smolang.org/stages#assignedTo> ?ent } 
+        """.trimIndent()
+        val query = QueryFactory.create(queryWithPrefixes)
+        val qexec = QueryExecutionFactory.create(query, model)
+        val res = qexec.execSelect()
+        var listA = listOf<Asset?>()
+        var list = listOf<Entity?>()
+        res.forEach { val f = Common.entityUriMap[it.get("?ent").toString()]; list = list + f}
+        res.forEach { val f = Common.assetUriMap[it.get("?ent").toString()]; listA = listA + f}
+        println(list)
+        println(listA)
+    }*/
+
     override fun getAssigned(asset: Asset): List<Entity> {
+        if(asset is Aggregate){
+            //printAllAssigned()
+            val queryWithPrefixes = """
+            SELECT DISTINCT ?ent { <${asset.uri.uri}> a <http://www.smolang.org/stages#Aggregate>; 
+                                                      <http://www.smolang.org/stages#hasPart> [<http://www.smolang.org/stages#assignedTo> ?ent] } 
+        """.trimIndent()
+            val query = QueryFactory.create(queryWithPrefixes)
+            val qexec = QueryExecutionFactory.create(query, model)
+            val res = qexec.execSelect()
+            var list = listOf<Entity?>()
+            res.forEach { val f = Common.entityUriMap[it.get("?ent").toString()]; list = list + f}
+            return list.filterNotNull()
+        }
         val queryWithPrefixes = """
             SELECT ?ent { <${asset.uri.uri}> <http://www.smolang.org/stages#assignedTo> ?ent } 
         """.trimIndent()
@@ -109,6 +150,7 @@ class SemanticKnowledgeBase : KnowledgeBase(){
             INSERT DATA { <${entity.uri.uri}> a <${entity.uriKind}>.
                           <${assigned.uri.uri}> <http://www.smolang.org/stages#assignedTo> <${entity.uri.uri}>.  } 
         """.trimIndent()
+        //println(queryWithPrefixes)
         val query = UpdateFactory.create(queryWithPrefixes)
         UpdateAction.execute(query, model)
     }
@@ -142,11 +184,21 @@ class SemanticKnowledgeBase : KnowledgeBase(){
         val queryWithPrefixes = """
             INSERT DATA { ${assets.map { "<${aggr.uri.uri}> <http://www.smolang.org/stages#hasPart> <${it.uri.uri}>." }.joinToString("\n")}  } 
         """.trimIndent()
+        //println(queryWithPrefixes)
         val query = UpdateFactory.create(queryWithPrefixes)
         UpdateAction.execute(query, model)
     }
 
-    override fun getParts(it: Aggregate, kb: KnowledgeBase): List<Asset> {
-        TODO("Not yet implemented")
+    override fun getParts(aggr: Aggregate, kb: KnowledgeBase): List<Asset> {
+        val queryWithPrefixes = """
+            SELECT DISTINCT ?part { <${aggr.uri.uri}> a <http://www.smolang.org/stages#Aggregate>; 
+                                                      <http://www.smolang.org/stages#hasPart> ?part } 
+        """.trimIndent()
+        val query = QueryFactory.create(queryWithPrefixes)
+        val qexec = QueryExecutionFactory.create(query, model)
+        val res = qexec.execSelect()
+        var list = listOf<Asset?>()
+        res.forEach { val f = Common.assetUriMap[it.get("?part").toString()]; list = list + f}
+        return list.filterNotNull()
     }
 }

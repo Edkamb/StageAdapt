@@ -34,10 +34,12 @@ interface SemanticStage {
 
 class HealthySemStage(override var count: Int) : HealthyStage(), SemanticStage{
     override fun gen(asset: Asset, KB : KnowledgeBase): List<Entity> = abduct(asset, KB, this)
+    override fun toString(): String = "Healthy"
 }
 
 class SickSemStage(override var count: Int) : SickStage(), SemanticStage{
     override fun gen(asset: Asset, KB : KnowledgeBase): List<Entity> = abduct(asset, KB, this)
+    override fun toString(): String = "Sick"
 }
 
 val entityToClass = mapOf(Pair("ReqTenMonitor",  ReqTenMonitor::class),

@@ -3,7 +3,7 @@ package org.smolang.stages.architecture
 import java.util.Queue
 
 /** requirement monitors */
-abstract class Monitor(override val nName: String, override val nKind: String) : Entity(nName, nKind) {
+abstract class Monitor(nnName: String, nnKind: String) : Entity(nnName, nnKind) {
     abstract fun check() : Boolean
     abstract fun getPort() : String
 }
@@ -30,6 +30,7 @@ class DirectCompose(val stage1: Stage, val stage2: Stage,
     }
     override fun gen(asset: Asset, KB : KnowledgeBase) : List<Entity> = genCompose(asset, KB)
     override fun getKind() : String = stage1.getKind()+"."+stage2.getKind()
+    override fun toString(): String = "$stage1.$stage2"
 }
 
 class RestrictedCompose(val stage1: Stage, val stage2: Stage, val size : Int,
@@ -46,7 +47,7 @@ class RestrictedCompose(val stage1: Stage, val stage2: Stage, val size : Int,
 }
 
 /** asset controllers */
-abstract class Controller(override val nName: String, override val nKind: String) : Entity(nName, nKind) {
+abstract class Controller(nnName: String, nnKind: String) : Entity(nnName, nnKind) {
     abstract fun setOutput(newInput : Queue<Double>)
     abstract fun control()
     abstract fun getPort(): String
