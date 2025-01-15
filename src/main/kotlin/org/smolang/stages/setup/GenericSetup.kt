@@ -6,12 +6,13 @@ import org.smolang.stages.system.Basil
 
 
 abstract class GenericNVDIStage(var range: ClosedFloatingPointRange<Double>, val id : Int) : Stage {
-    override fun isMember(candidate: Asset, KB: KnowledgeBase): Boolean {
-        val va = KB.getValue(candidate, "n")
+    override fun isMember(candidate: Set<Asset>, KB: KnowledgeBase): Boolean {
+            if(candidate.size >= 2 ) throw Exception("Invalid use of single asset stage")
+        val va = KB.getValue(candidate.first(), "n")
         return range.contains(va)
     }
 
-    override fun isConsistent(name : Asset, mons : List<Entity>, KB : KnowledgeBase) : Boolean {
+    override fun isConsistent(mons : List<Entity>, KB : KnowledgeBase) : Boolean {
         return mons.isNotEmpty() && mons.all { it is GenericMonitor && it.id == id }
     }
 

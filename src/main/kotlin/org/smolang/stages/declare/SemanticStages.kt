@@ -22,7 +22,7 @@ interface SemanticStage {
         outer@ for( i in 1..1 ) {
             for(clazz in clazzes) {
                 val newEntity = clazz!!.constructors.first().call(asset, "mon_${count++}")
-                if(stage.isConsistent(asset, listOf(newEntity), KB)) {
+                if(stage.isConsistent(listOf(newEntity), KB)) {
                     KB.addAssignedEntity(newEntity, asset)
                     break@outer
                 }

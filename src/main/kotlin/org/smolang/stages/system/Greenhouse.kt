@@ -35,11 +35,12 @@ class ReqFiveMonitor(val assetName : Asset, monName : String) : Monitor(monName,
 }
 
 abstract class HealthyStage : Stage {
-    override fun isMember(candidate: Asset, KB: KnowledgeBase): Boolean {
-        return KB.getValue(candidate, "n") >= 0.5
+    override fun isMember(candidate: Set<Asset>, KB: KnowledgeBase): Boolean {
+        if(candidate.size >= 2 ) throw Exception("Invalid use of single asset stage")
+        return KB.getValue(candidate.first(), "n") >= 0.5
     }
 
-    override fun isConsistent(name: Asset, mons: List<Entity>, KB: KnowledgeBase): Boolean {
+    override fun isConsistent(mons: List<Entity>, KB: KnowledgeBase): Boolean {
         return mons.isNotEmpty() && mons.all { it is ReqTenMonitor }
     }
 
@@ -48,11 +49,12 @@ abstract class HealthyStage : Stage {
 
 
 abstract class SickStage : Stage {
-    override fun isMember(candidate: Asset, KB: KnowledgeBase): Boolean {
-        return KB.getValue(candidate, "n") < 0.5
+    override fun isMember(candidate: Set<Asset>, KB: KnowledgeBase): Boolean {
+        if(candidate.size >= 2 ) throw Exception("Invalid use of single asset stage")
+        return KB.getValue(candidate.first(), "n") < 0.5
     }
 
-    override fun isConsistent(name : Asset, mons : List<Entity>, KB : KnowledgeBase) : Boolean {
+    override fun isConsistent(mons : List<Entity>, KB : KnowledgeBase) : Boolean {
         return mons.isNotEmpty() && mons.all { it is ReqFiveMonitor }
     }
 
