@@ -45,7 +45,7 @@ class StageMonitor(val system: System, val KB: KnowledgeBase) {
                 if (!stage.isConsistent(assigned, KB)) { // this computes V (l.5) M
                     println("   inconsistent: $member with $stage")
                     val ret = stage.gen(member, KB)
-                    toAdd = toAdd + Pair(member, ret)     // this computer toGenerate (l.9) A
+                    toAdd = toAdd + Pair(member, ret)     // this computes toGenerate (l.9) A
                 }
             }
         }

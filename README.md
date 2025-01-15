@@ -2,6 +2,12 @@ This repository contains a prototypical implementation of declarative lifecycles
 
 To reproduce the data for the plots, run first `./generateDecl.sh >> decl.csv` (for the non-semantic stages) and then `./generateSem.sh >> sem.csv` (for the semantic stages). Each script will take a few minutes to run. To generate the 3D plot, run `python3 plot.py`.
 
+To investigate the implementation of the greenhouse, check the stages in `DeclaraticeStages.kt` and `SemanticStages.kt`.
+The overall workflow is setup in `Architect.kt` and `Stage.kt`. Run the main method to get the possible options to run the scenarios.
+Ex1a corresponds to --scenario1 and --scenario2. Ex1b corresponds to --multi and --multi_semantic. In both cases, one 
+defect is detected in the end.
+
+
 ## Mapping
 Operation uri(.) retrieves the URI of an asset, components, asset kind or other parameter.
 
@@ -9,9 +15,9 @@ Operation uri(.) retrieves the URI of an asset, components, asset kind or other 
 ```
             INSERT DATA { uri(ast) rdf:type uri(A) }
 ```
-* ADD(ast,c,C) is mapped to
+* ADD(ast,c,C,P) is mapped to
 ```
-            INSERT DATA { uri(c) rdf:type uri(C). uri(ast) assignedTo uri(c) }
+            INSERT DATA { uri(c) rdf:type uri(C). uri(ast) P uri(c) }
 ```
 * UPDATE(ast,p,v) is mapped to
 ```
