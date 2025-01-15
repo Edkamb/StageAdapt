@@ -1,8 +1,10 @@
 package org.smolang.stages.declare
 
+import org.smolang.stages.architecture.Aggregate
 import org.smolang.stages.architecture.Asset
 import org.smolang.stages.architecture.Entity
 import org.smolang.stages.architecture.KnowledgeBase
+
 
 interface Knowledge
 data class ExistsEntity(val entity: Entity) : Knowledge {
@@ -25,14 +27,28 @@ data class HasValue(val asset: Asset, val property : String, val value: Double) 
         return "HasValue($asset, $property, $value)"
     }
 }
+data class HasPart(val aggregate: Aggregate, val asset: Asset) : Knowledge
 
 class DeclareKnowledgeBase : KnowledgeBase(){
     private val knowledge = mutableSetOf<Knowledge>()
+    private var count = 0
     override fun print() : String{
         return knowledge.joinToString(", ")
     }
     fun add(k : Knowledge) { knowledge.add(k) }
 
+
+    override fun aggregate(assets: List<Asset>) {
+
+        val myAst = assets.map { it.nKind }.joinToString(".")
+        val aggregate = Aggregate("aggr"+(count++), myAst)
+        assets.forEach { knowledge.add(HasPart(aggregate, it)) }
+        knowledge.add(ExistsAsset(aggregate))
+    }
+
+    override fun getParts(aggr: Aggregate, kb: KnowledgeBase): List<Asset> {
+        return knowledge.filterIsInstance<HasPart>().filter { it.aggregate == aggr }.map { it.asset }
+    }
 
     override fun addAssignedEntity(entity: Entity, assigned: Asset) {
         knowledge.add(AssignedTo(assigned, entity))
@@ -72,6 +88,11 @@ class DeclareKnowledgeBase : KnowledgeBase(){
     }
 
     override fun getAssigned(asset : Asset) : List<Entity>{
+        if(asset is Aggregate)
+            return knowledge.filterIsInstance<HasPart>()
+                            .filter { it.aggregate == asset }
+                            .map { it.asset }
+                            .fold(listOf()) {acc, nx -> acc + getAssigned(nx)}
         return knowledge.filterIsInstance<AssignedTo>().filter{it.asset == asset }.map { it.entity }
     }
 

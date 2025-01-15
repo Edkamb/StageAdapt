@@ -32,6 +32,19 @@ class DirectCompose(val stage1: Stage, val stage2: Stage,
     override fun getKind() : String = stage1.getKind()+"."+stage2.getKind()
 }
 
+class RestrictedCompose(val stage1: Stage, val stage2: Stage, val size : Int,
+                        val genCompose : (asset :Asset, KB: KnowledgeBase) -> List<Entity>) : Stage {
+
+    override fun isMember(assets: Set<Asset>, KB : KnowledgeBase) : Boolean{
+        return stage1.isMember(assets, KB) && assets.windowed(size).any { stage2.isMember(it.toSet(), KB) }
+    }
+    override fun isConsistent(mons : List<Entity>, KB : KnowledgeBase) : Boolean{
+        return mons.windowed(size).any { stage2.isConsistent(it, KB) }
+    }
+    override fun gen(asset: Asset, KB : KnowledgeBase) : List<Entity> = genCompose(asset, KB)
+    override fun getKind() : String = stage1.getKind()
+}
+
 /** asset controllers */
 abstract class Controller(override val nName: String, override val nKind: String) : Entity(nName, nKind) {
     abstract fun setOutput(newInput : Queue<Double>)

@@ -7,15 +7,12 @@ import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.reasoner.ReasonerRegistry
 import org.apache.jena.update.UpdateAction
 import org.apache.jena.update.UpdateFactory
-import org.smolang.stages.architecture.Asset
-import org.smolang.stages.architecture.Common
-import org.smolang.stages.architecture.Entity
-import org.smolang.stages.architecture.KnowledgeBase
+import org.smolang.stages.architecture.*
 import java.io.ByteArrayInputStream
 import java.io.File
 
 class SemanticKnowledgeBase : KnowledgeBase(){
-
+ private var count = 0
   private val model : Model //= ModelFactory.createDefaultModel()
    init {
        val f = ModelFactory.createDefaultModel().read(ByteArrayInputStream(File("coreOnto.ttl").readText().toByteArray()), null, "TTL")
@@ -53,7 +50,7 @@ class SemanticKnowledgeBase : KnowledgeBase(){
     }
 
     override fun getKindedAssets(kind: String): List<Asset> {
-
+    //XXX TODO: add here the dcomposition and aggregation
         val queryWithPrefixes = """
             SELECT ?ast { ?ast a <http://www.smolang.org/stages#$kind> } 
         """.trimIndent()
@@ -136,5 +133,20 @@ class SemanticKnowledgeBase : KnowledgeBase(){
         var list = listOf<String?>()
         res.forEach { list = list + it.toString()}
         return list.filterNotNull()
+    }
+
+    override fun aggregate(assets: List<Asset>) {
+        val aggr = Aggregate("aggr${count++}","Aggregate")
+        addAsset(aggr)
+        assets.map { "<${aggr.uri.uri}> <http://www.smolang.org/stages#hasPart> <${it.uri.uri}>." }.joinToString("\n")
+        val queryWithPrefixes = """
+            INSERT DATA { ${assets.map { "<${aggr.uri.uri}> <http://www.smolang.org/stages#hasPart> <${it.uri.uri}>." }.joinToString("\n")}  } 
+        """.trimIndent()
+        val query = UpdateFactory.create(queryWithPrefixes)
+        UpdateAction.execute(query, model)
+    }
+
+    override fun getParts(it: Aggregate, kb: KnowledgeBase): List<Asset> {
+        TODO("Not yet implemented")
     }
 }

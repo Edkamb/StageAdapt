@@ -10,6 +10,19 @@ class HealthyDeclStage : HealthyStage() {
         return listOf(ReqTenMonitor(asset, "rqTen_${count++}"))
     }
 }
+class OkDeclStage : OkStage() {
+    private var count = 0
+    override fun gen(asset: Asset, KB : KnowledgeBase): List<Entity> {
+        return listOf(ReqWattOkMonitor(asset, "rqOk_${count++}"))
+    }
+}
+
+class MaintainDeclStage : MaintainStage() {
+    private var count = 0
+    override fun gen(asset: Asset, KB : KnowledgeBase): List<Entity> {
+        return listOf(ReqWattOkMonitor(asset, "rqOk_${count++}"))
+    }
+}
 
 class SickDeclStage : SickStage() {
     private var count = 0

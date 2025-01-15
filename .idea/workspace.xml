@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35146ae9-c571-4e18-a929-3d7621058326" name="Changes" comment="Added mapping">
+    <list default="true" id="35146ae9-c571-4e18-a929-3d7621058326" name="Changes" comment="Added direct composition">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Architect.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Architect.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Common.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Common.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Knowledge.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Knowledge.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Stage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Stage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/SemanticStages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/SemanticStages.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/setup/GenericSetup.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/setup/GenericSetup.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/Declare.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/Declare.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/DeclerativeStages.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/DeclerativeStages.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/Semantic.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/Semantic.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/setup/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/setup/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/system/Greenhouse.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/system/Greenhouse.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,6 +64,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Gradle.Build StageAdapt.executor": "Run",
+    "Kotlin.MainKt Multi.executor": "Debug",
     "Kotlin.MainKt Scen2.executor": "Run",
     "Kotlin.MainKt genD.executor": "Run",
     "Kotlin.MainKt genS.executor": "Run",
@@ -86,7 +91,16 @@
       <recent name="org.smolang.architecture" />
     </key>
   </component>
-  <component name="RunManager" selected="Kotlin.MainKt genD">
+  <component name="RunManager" selected="Kotlin.MainKt Multi">
+    <configuration name="MainKt Multi" type="JetRunConfigurationType">
+      <option name="MAIN_CLASS_NAME" value="org.smolang.stages.setup.MainKt" />
+      <module name="StageAdapt.main" />
+      <option name="PROGRAM_PARAMETERS" value="--multi" />
+      <shortenClasspath name="NONE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="MainKt Scen1" type="JetRunConfigurationType" temporary="true">
       <option name="MAIN_CLASS_NAME" value="org.smolang.stages.setup.MainKt" />
       <module name="StageAdapt.main" />
@@ -125,6 +139,7 @@
     </configuration>
     <list>
       <item itemvalue="Kotlin.MainKt Scen2" />
+      <item itemvalue="Kotlin.MainKt Multi" />
       <item itemvalue="Kotlin.MainKt genD" />
       <item itemvalue="Kotlin.MainKt genS" />
       <item itemvalue="Kotlin.MainKt Scen1" />
@@ -208,7 +223,15 @@
       <option name="project" value="LOCAL" />
       <updated>1723557980103</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Added direct composition">
+      <option name="closed" value="true" />
+      <created>1736941313995</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1736941313995</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -219,25 +242,31 @@
     <MESSAGE value="Performance evaluation" />
     <MESSAGE value="Readme for plotting" />
     <MESSAGE value="Added mapping" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added mapping" />
+    <MESSAGE value="Added direct composition" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added direct composition" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/declare/DeclerativeStages.kt</url>
-          <line>12</line>
+          <line>18</line>
           <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Architect.kt</url>
-          <line>35</line>
-          <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/setup/Main.kt</url>
           <line>81</line>
           <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Architect.kt</url>
+          <line>37</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/org/smolang/stages/architecture/Architect.kt</url>
+          <line>44</line>
+          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

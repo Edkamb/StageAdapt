@@ -11,11 +11,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.smolang.stages.architecture.Asset
 import org.smolang.stages.architecture.DefaultController
+import org.smolang.stages.architecture.DirectCompose
 import org.smolang.stages.architecture.System
 import org.smolang.stages.declare.*
-import org.smolang.stages.system.Basil
-import org.smolang.stages.system.NVDIAsset
-import org.smolang.stages.system.ReqTenMonitor
+import org.smolang.stages.system.*
 import kotlin.random.Random
 import kotlin.system.exitProcess
 
@@ -26,6 +25,7 @@ class Main : CliktCommand() {
         "--test" to "test", "-t" to "test",
         "--scenario1" to "scen1", "-s1" to "scen1",
         "--scenario2" to "scen2", "-s2" to "scen2",
+        "--multi" to "multi",
         "--generic_declare" to "genD", "-gD" to "genD",
         "--generic_semantic" to "genS", "-gS" to "genS",
     ).default("test")
@@ -102,7 +102,10 @@ class Main : CliktCommand() {
             println(vv)
             exitProcess(0)
         }
-
+        if(scenario == "multi") {
+            runMultiSetup()
+            exitProcess(0)
+        }
         val sys = if(scenario == "scen1") System(DeclareKnowledgeBase()) else System(SemanticKnowledgeBase())
         val tagger = sys.tagger
 
@@ -143,6 +146,78 @@ class Main : CliktCommand() {
 
         }
 
+    }
+
+    private fun runMultiSetup() {
+
+        val sys = System(DeclareKnowledgeBase())
+        val tagger = sys.tagger
+
+        val pump1 = Pump("pump1", tagger, PumpKind)
+        val pump2 = Pump("pump2", tagger, PumpKind)
+        tagger.addAsset(pump1)
+        tagger.addAsset(pump2)
+        val ast1 = NVDIAsset("ast1", tagger, Basil)
+        val ast2 = NVDIAsset("ast2", tagger, Basil)
+        tagger.addAsset(ast1)
+        tagger.addAsset(ast2)
+
+        sys.KB.aggregate(listOf(ast1,pump1))
+        sys.KB.aggregate(listOf(ast2,pump2))
+
+        val ctrl1 = DefaultController("ctrl1")
+        val ctrl2 = DefaultController("ctrl2")
+        sys.addAssignedEntity(ctrl1, ast1)
+        sys.addAssignedEntity(ctrl2, ast2)
+
+        val mon1 = ReqTenMonitor(ast1, "mon1")
+        val mon2 = ReqTenMonitor(ast2, "mon2")
+        sys.addAssignedEntity(mon1, ast1)
+        sys.addAssignedEntity(mon2, ast2)
+
+        val monW1 = ReqWattOkMonitor(pump1, "monW1")
+        val monW2 = ReqWattOkMonitor(pump2, "monW2")
+        sys.addAssignedEntity(monW1, pump1)
+        sys.addAssignedEntity(monW2, pump2)
+
+        val pl1 = HealthyDeclStage()
+        val pl2 = SickDeclStage()
+        val pu1 = OkDeclStage()
+        val pu2 = MaintainDeclStage()
+        val st1 = DirectCompose(pl1, pu1, 1, 1)
+        { ast, knowledgeBase -> pl1.gen(ast, knowledgeBase) + pu1.gen(ast, knowledgeBase) }
+        val st2 = DirectCompose(pl1, pu2, 1, 1)
+        { ast, knowledgeBase -> pl1.gen(ast, knowledgeBase) + pu2.gen(ast, knowledgeBase) }
+        val st3 = DirectCompose(pl1, pu1, 1, 1)
+        { ast, knowledgeBase -> pl2.gen(ast, knowledgeBase) + pu1.gen(ast, knowledgeBase) }
+        val st4 = DirectCompose(pl2, pu2, 1, 1)
+        { ast, knowledgeBase -> pl2.gen(ast, knowledgeBase) + pu2.gen(ast, knowledgeBase) }
+        sys.addStage(st1)
+        sys.addStage(st2)
+        sys.addStage(st3)
+        sys.addStage(st4)
+
+        runBlocking {
+            var i = 10
+            var j = 10
+            launch { pump1.repeatPush(150.0, OK, 1000, 5) }
+            launch { delay(6000); pump1.repeatPush(75.0, MAINTAIN, 1000, 5) }
+            launch { pump2.repeatPush(75.0, OK, 1000, 10) }
+            launch { ast1.repeatPush(0.7, 10.0, 1000, 10) }
+            launch { ast2.repeatPush(0.7, 10.0, 1000, 10) }
+            launch {
+                while (i-- > 0) {
+                    delay(1000); sys.monitorCycle(); }
+            }
+            launch { delay(3000); sys.stageCycle(); delay(3000); sys.stageCycle() }
+            if(verbose){launch {
+                while (j-- > 0) {
+                    delay(1000); sys.print()
+                }
+            }
+            }
+
+        }
     }
 }
 

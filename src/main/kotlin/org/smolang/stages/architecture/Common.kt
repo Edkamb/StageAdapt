@@ -54,3 +54,6 @@ object Common {
     val assetUriMap = mutableMapOf<String, Asset>()
     val entityUriMap = mutableMapOf<String, Entity>()
 }
+
+
+data class Aggregate(val nname: String, val aggr : String) : Asset(nname, aggr)

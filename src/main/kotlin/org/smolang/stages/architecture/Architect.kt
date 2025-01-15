@@ -1,5 +1,6 @@
 package org.smolang.stages.architecture
 
+
 interface Ports {
     fun sensorUpdate(asset: Asset, portName : String, value : Double)
     fun addAsset(asset: Asset)
@@ -32,17 +33,20 @@ class StageMonitor(val system: System, val KB: KnowledgeBase) {
 
     fun addStage(stage : Stage){ stages.add(stage) }
 
+
     fun detectMissing(){
         var toAdd = listOf<Pair<Asset, List<Entity>>>()
         for(stage in stages){
             val kinded = KB.getKindedAssets(stage.getKind())
-            val members = kinded.filter { stage.isMember(it, KB) }
-            for(member in members)
-                if(!stage.isConsistent(KB.getAssigned(member), KB)) { // this computes V (l.5) M
-                    //println("   inconsistent: $member")
+            val members = kinded.filter { if(it is Aggregate) stage.isMember(KB.getParts(it, KB).toSet(), KB) else stage.isMember(it, KB) }
+            for(member in members) {
+                val assigned = KB.getAssigned(member)
+                if (!stage.isConsistent(assigned, KB)) { // this computes V (l.5) M
+                    println("   inconsistent: $member")
                     val ret = stage.gen(member, KB)
                     toAdd = toAdd + Pair(member, ret)     // this computer toGenerate (l.9) A
                 }
+            }
         }
 
         // repair / PE
